@@ -1,8 +1,8 @@
 # EP1
 Relatório EP1 de Cálculo Numérico
 
-Joshua de Rezende Aguilar Simionato / NUSP 11260929
-Raphael Vieira de Vasconcelos Vilaça Pinto / NUSP 11805099
+  Joshua de Rezende Aguilar Simionato / NUSP 11260929
+  Raphael Vieira de Vasconcelos Vilaça Pinto / NUSP 11805099
 
 O código foi desenvolvido na plataforma Jupyter e com o software Anaconda, que contempla o uso do Python.
 
