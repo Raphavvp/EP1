@@ -1,0 +1,70 @@
+import math
+def vetor_a(n):
+    i = 2
+    av = np.zeros(n-1)
+    for lax in range (n-2):
+        a = ((2*i-1)/(4*i))        
+        i += 1
+        av[lax] = a
+    av[n-2] = ((2*n)-1)/(2*n)
+    return (av)
+
+def vetor_b(n):
+    i = 2
+    bv = np.zeros(n)
+    for lbx in range (n):
+        b = 2
+        bv[lbx] = b
+    return (bv)
+
+def vetor_c(n):
+    av = vetor_a(n)
+    num=0
+    cv = np.zeros(n-1)
+    for lcx in range (n-1):
+        c = 1 - av[num]
+        num +=1
+        cv[lcx] = c
+    return (cv)
+
+def main():
+    n = int(input ("Insira n: "))
+    matrix = np.zeros ((n,n))
+    av = vetor_a(n)
+    for you in range (n):
+        matrix[(you-1),(you-1)] = vetor_b(n)[you-1]
+    out = 0
+    for your in range (n-1):
+        matrix[((out), (out+1))] = vetor_c(n)[out]
+        out += 1
+    out = 0
+    for youth in range (n-1):
+        matrix[((out+1), (out))] = vetor_a(n)[out]
+        out += 1
+    for uit in range (n-1): 
+        coeftotal = []
+        coef = np.zeros(n-1-uit)
+        for j in range (n-1-uit):
+            coef[j] = matrix[j+1+uit][0+uit]/matrix[0+uit][0+uit] #formou a primeira linha
+        hugo = 1 + uit
+        for r in range (n-1-uit):
+            for h in range (n-1-uit):
+                a = matrix[hugo][h+1+uit] - coef[r]*matrix[uit][h+1+uit]
+                matrix[hugo][h+1+uit] = a
+            hugo += 1
+        matrix[uit+1][uit] = coef[0]
+    print (matrix)
+    matrix_L = np.zeros((n,n))
+    for trap in range (n):
+        matrix_L[trap][trap] = 1
+    for drake in range (n-1): 
+        matrix_L[1+drake][drake]=matrix[1+drake][drake]
+    matrix_U = np.zeros((n,n))
+    for rap in range (n):
+        matrix_U[rap][rap] = matrix[rap][rap]
+    for rock in range (n-1):
+        matrix_U[rock][rock+1] = matrix[rock][rock+1]
+    print (matrix_L)
+    print (matrix_U)
+            
+main()
