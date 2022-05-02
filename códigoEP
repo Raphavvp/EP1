@@ -1,0 +1,118 @@
+import numpy as np
+import math
+def vetor_d_função(n):
+    vetor_d = np.zeros(n)
+    for upp in range (n):
+        vetor_d[upp] = math.cos((2*math.pi*((upp+1)**2))/(n**2))
+    return (vetor_d)
+
+def transf(n):
+    matrix = np.zeros ((n,n))
+    i = 2
+    for lax in range (n-2):
+        a = ((2*i-1)/(4*i))        
+        i += 1
+        matrix[lax+1][lax] = a
+    matrix[n-1][n-2] = ((2*n)-1)/(2*n)
+    i = 2
+    for lbx in range (n):
+        b = 2
+        matrix[lbx][lbx] = b
+    for lcx in range (n-2):
+        c = 1 - matrix[lcx+2][lcx+1]
+        matrix[lcx+1][lcx+2] = c
+    matrix [n-1][0] = 1 - matrix [n-1][n-2]
+    matrix [0][n-1] = (2*1-1)/(4*1)
+    matrix [0][1] = 1 - matrix [0][n-1]
+    return (matrix)
+
+def decompLU_L(n, matrix):
+    n = len(matrix)
+    for uit in range (n-1): 
+        coef = np.zeros(n-1-uit)
+        for j in range (n-1-uit):
+            coef[j] = matrix[j+1+uit][0+uit]/matrix[0+uit][0+uit] #formou a primeira linha
+        hugo = 1 + uit
+        for r in range (n-1-uit):
+            for h in range (n-1-uit):
+                a = matrix[hugo][h+1+uit] - coef[r]*matrix[uit][h+1+uit]
+                matrix[hugo][h+1+uit] = a
+            hugo += 1
+        matrix[uit+1][uit] = coef[0]
+    matrix_L = np.zeros((n,n))
+    for trap in range (n):
+        matrix_L[trap][trap] = 1
+    for drake in range (n-1): 
+        matrix_L[1+drake][drake]=matrix[1+drake][drake]
+    return (matrix_L)
+
+def decompLU_U(n, matrix):
+    for uit in range (n-1): 
+        coef = np.zeros(n-1-uit)    #forma vetor com os coeficientes
+        for j in range (n-1-uit):
+            coef[j] = matrix[j+1+uit][0+uit]/matrix[0+uit][0+uit]    #formou a primeira linha
+        hugo = 1 + uit
+        for r in range (n-1-uit):
+            for h in range (n-1-uit):
+                a = matrix[hugo][h+1+uit] - coef[r]*matrix[uit][h+1+uit]     #subtrai numero da linha pelo numero da linha de cima vezes o coeficiente
+                matrix[hugo][h+1+uit] = a  #resultado entra na linha
+            hugo += 1
+        matrix[uit+1][uit] = coef[0]
+    matrix_U = np.zeros((n,n))
+    for rap in range (n):
+        matrix_U[rap][rap] = matrix[rap][rap]
+    for rock in range (n-1):
+        matrix_U[rock][rock+1] = matrix[rock][rock+1]
+    print(matrix_U)
+    return (matrix_U)
+
+
+def vetor_Y_trigonal(n, matrix, vetor_d):
+    matriz_L = decompLU_L(n, matrix)
+    vetor_L = np.ones(n-1)
+    for upa in range (n-1): #transformar matriz L em vetor L
+        vetor_L[upa] = matriz_L[upa+1][upa]  
+    vetor_Y = np.zeros(n)
+    til = vetor_d[0] 
+    vetor_Y[0] = til
+    ui = 0
+    for yuca in range (n-1):   #usar vetor L e vetor D para fazer vetor Y
+        yi = vetor_d[yuca+1] - vetor_L[ui]*vetor_Y[ui]
+        vetor_Y[ui+1]=yi
+        ui +=1
+    return(vetor_Y)
+    
+def vetor_X_trigonal(n, matrix, vetor_Y, vetor_d):
+    vetor_U = np.ones(n)
+    matriz_U = decompLU_U(n, matrix)
+    for jaca in range (n):   #transformar matriz U em um vetor U
+        vetor_U[jaca] = matriz_U[jaca][jaca]
+    print(vetor_U)
+    vetor_C = np.ones(n-1)
+    matrix = transf(n)
+    for maca in range (n-1):   #transformar matriz U em um vetor C
+        vetor_C[maca] = matriz_U[maca][maca+1]
+    vetor_X = np.zeros(n)
+    print(vetor_Y[n-1])
+    print(vetor_U[n-1])
+    vetor_X[n-1] = vetor_Y[n-1]/vetor_U[n-1]
+    pato = 2
+    for storm in range (n-1):  #aplicar vetores para fazer vetor X
+        vetor_X[n-pato] = ((vetor_Y[n-pato]-(vetor_C[n-pato]*vetor_X[n-pato+1]))/vetor_U[n-pato])   
+        pato = pato + 1
+    return (vetor_X)
+
+def main():
+    n = int(input ("Insira n: "))
+    matrix = transf(n)
+    newmatrix = np.zeros((n,n))
+    for rix in range (n):
+        for rex in range (n):
+            newmatrix[rix][rex]=matrix[rix][rex]
+    newmatrix[0][n-1] = 0
+    newmatrix[n-1][0] = 0
+    matrix = newmatrix
+    vetor_d = vetor_d_função(n)
+    vetor_Y = vetor_Y_trigonal(n, matrix, vetor_d)
+    print(vetor_X_trigonal(n, matrix, vetor_Y, vetor_d))
+main()
