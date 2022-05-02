@@ -1,0 +1,71 @@
+def vetor_d_função(n):
+    vetor_d = (np.zeros(n))
+    for upp in range (n):
+        vetor_d[upp] = math.cos(2*math.pi*(upp**2))/(n**2)
+    return (vetor_d)
+
+def transf(n):
+    matrix = np.zeros ((n,n))
+    i = 2
+    for lax in range (n-2):
+        a = ((2*i-1)/(4*i))        
+        i += 1
+        matrix[lax+1][lax] = a
+    matrix[n-1][n-2] = ((2*n)-1)/(2*n)
+    i = 2
+    for lbx in range (n):
+        b = 2
+        matrix[lbx][lbx] = b
+    for lcx in range (n-1):
+        c = 1 - matrix[lcx+1][lcx]
+        matrix[lcx][lcx+1] = c
+    return (matrix)
+
+def main():
+    n = int(input ("Insira n: "))
+    vetor_d = vetor_d_função(n)
+    matrix = transf(n)
+    for uit in range (n-1): 
+        coef = np.zeros(n-1-uit)
+        for j in range (n-1-uit):
+            coef[j] = matrix[j+1+uit][0+uit]/matrix[0+uit][0+uit] #formou a primeira linha
+        hugo = 1 + uit
+        for r in range (n-1-uit):
+            for h in range (n-1-uit):
+                a = matrix[hugo][h+1+uit] - coef[r]*matrix[uit][h+1+uit]
+                matrix[hugo][h+1+uit] = a
+            hugo += 1
+        matrix[uit+1][uit] = coef[0]  #matriz LU
+    matrix_U = np.zeros((n,n))
+    for rap in range (n):
+        matrix_U[rap][rap] = matrix[rap][rap]
+    for rock in range (n-1):
+        matrix_U[rock][rock+1] = matrix[rock][rock+1]   #matriz U
+    matriz_L = decompLU_L(n, matrix)  #matriz L
+    vetor_L = np.ones(n-1)
+    for upa in range (n-1): #transformar matriz L em vetor L
+        vetor_L[upa] = matriz_L[upa+1][upa]
+    vetor_Y = np.zeros(n)     
+    vetor_Y[0] = vetor_d[0]
+    ui = 0
+    for yuca in range (n-1):   #usar vetor L e vetor D para fazer vetor Y
+        yi = vetor_d[ui+1] - vetor_L[ui]*vetor_Y[ui]
+        vetor_Y[ui+1]=yi
+        ui +=1
+    vetor_U = np.ones(n)
+    matriz_U = decompLU_U(n, matrix)
+    for jaca in range (n):   #transformar matriz U em um vetor U
+        vetor_U[jaca] = matriz_U[jaca][jaca]
+    vetor_C = np.ones(n-1)
+    matrix = transf(n)
+    for maca in range (n-1):   #transformar matriz U em um vetor C
+        vetor_C[maca] = matriz_U[maca][maca+1]
+        vetor_X = np.zeros(n)
+    vetor_X[n-1] = vetor_Y_trigonal(n, matrix, vetor_d)[n-1]/vetor_U[n-1]
+    pato = 2
+    for storm in range (n-1):  #aplicar vetores para fazer vetor X
+        vetor_X[n-pato] = ((vetor_Y_trigonal(n, matrix, vetor_d)[n-pato]-(vetor_C[n-pato]*vetor_X[n-pato+1]))/vetor_U[n-pato])   
+        pato += 1
+    print (vetor_X)
+    return (vetor_X)
+main()
